@@ -1,33 +1,106 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.vote-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.welcome-message {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    align-items: center;
+    /* Center content horizontally */
+    text-align: center;
+    /* Add margin to separate from proposal title */
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.proposal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    align-items: center;
+    /* Center content horizontally */
+    text-align: center;
+    /* Add margin to separate from proposal description */
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.proposal-section {
+    margin-bottom: 20px;
+    align-items: center;
+    /* Center content horizontally */
+    text-align: center;
+}
+
+
+.proposal-description {
+    margin-top: 10px;
+    padding: 15px;
+    /* Added padding for better appearance */
+    border: 2px solid #ccc;
+    /* Added border */
+    border-radius: 8px;
+    /* Added border radius */
+    background-color: #fff;
+    /* Background color for description box */
+}
+
+.proposal-description h5 {
+    font-size: 20px;
+    color: #555;
+}
+
+.proposal-description p {
+    font-size: 16px;
+    color: #777;
+}
+
+.voting-stats {
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.voting-stats h5 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.stats-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.stats-list li {
+    margin-bottom: 10px;
+}
+
+.stats-list h6 {
+    font-size: 16px;
+    color: #555;
+    margin: 0;
+}
+
+.stats-list span,
+.stats-list h3 {
+    font-size: 16px;
+    color: #777;
+}
+
+.vote-section {
+    flex: 1;
+}
+
+.vote-section h4 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.voting-section {
+    display: flex;
 }
