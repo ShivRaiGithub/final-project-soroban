@@ -1,129 +1,82 @@
-import { propTitle, description, startDate, endDate, total } from "./propdata";
-import { useEffect, useState } from "react";
-import { fetchPoll, fetchVoter, vote } from "./soroban";
-import { retrievePublicKey, checkConnection } from "./freighter";
-
+import { propTitle, description, startDate, endDate, choices } from "./propdata"; // Importing proposal data
+import { useEffect, useState } from "react"; // Importing hooks from React
+import { fetchPoll, fetchVoter, vote } from "./soroban"; // Importing functions to interact with the Soroban contract
 
 export default function Vote({ publicKey }) {
-    const [total, setTotal] = useState(0);
-    const [hasVoted, setHasVoted] = useState(null);
+    // State variables to manage component state
+    const [total, setTotal] = useState(0); // Total votes
+    const [hasVoted, setHasVoted] = useState(null); // User voting status
+    const [values, setValues] = useState([]); // Values of votes for choices
+    const [pollData, setPollData] = useState([]); // Poll data
+    const [userVote, setUserVote] = useState([]); // User's vote information
+    const [cast, setCast] = useState(false); // Whether the user has cast a vote
+    const [pollFetched, setPollFetched] = useState(false); // Whether the poll data has been fetched
 
-    useEffect(() => {
-        fetchPoll(publicKey).then((values) => {
-            fetchVotes(values);
-        });
-
-    }, []);
-
-    const handleCastVote = async () => {
-        setHasVoted(false);
+    // Function to fetch poll data from the contract
+    async function handleVotingFetch() {
+        try {
+            if (!pollFetched) { // Fetch only if not already fetched
+                const poll = await fetchPoll(publicKey); // Fetch poll data
+                fetchVotes(poll); // Process and set poll data
+                setPollFetched(true); // Set poll fetched status to true
+            }
+        } catch (error) {
+            console.error("Error fetching poll data:", error);
+        }
     }
 
+    // Function to handle casting a vote
+    async function handleCasting() {
+        await getVoter(); // Fetch voter info
+        setCast(true); // Set cast status to true
+    }
+
+    // Function to fetch voter info from the contract
     async function getVoter() {
-        let voterinfo = await fetchVoter();
-        let choicebuttons = document.getElementById("choicebuttons");
-        let initButton = document.getElementById("initiate");
-        initButton.remove();
-        if (voterinfo[0] == "none") {
-            for (let i = 0; i < choices.length; i++) {
-                let choicedesc = choices[i]
-                let _button = document.createElement("button");
-                _button.value = choicedesc;
-                _button.onclick = () => submitVote(choicedesc)
-                _button.innerHTML = choicedesc;
-                choicebuttons.appendChild(_button);
-                choicebuttons.appendChild(document.createElement("br"));
+        try {
+            let voterinfo = await fetchVoter(); // Fetch voter info
+            if (voterinfo[0] === "none") { // If the user has not voted
+                setHasVoted(false);
+            } else { // If the user has voted
+                setHasVoted(true);
+                setUserVote(voterinfo);
             }
-            return;
-        }
-        else {
-            let title = document.createElement("h5");
-            title.textContent = "Vote Already Submitted";
-            title.style.color = 'white'
-            let choice = document.createElement("h5");
-            choice.textContent = "Voted: " + voterinfo[0];
-            choice.style.color = 'white'
-            choicebuttons.appendChild(title);
-            choicebuttons.appendChild(choice);
-            return;
+        } catch (error) {
+            console.error("Error fetching voter info:", error);
         }
     }
 
-    // const loadOptions = async () => {
-    //     let choicebutton = document.getElementById("choicebuttons");
-    //     let _button = document.createElement("button");
-    //     _button.onclick = () => getVoter();
-    //     _button.id = "initiate";
-
-    //     choicebutton.appendChild(_button);
-    //     choicebutton.appendChild(document.createElement("br"));
-    // }
-
-
+    // Function to process and set poll data
     async function fetchVotes(poll) {
-        let value = [poll[2], poll[0]];
-        setTotal(poll[1]);
-        let container = document.getElementById("choicecontainer");
-        for (let i = 0; i < choices.length; i++) {
-            let choicecount = value[i];
-            let choicedesc = choices[i];
-            if (choicecount == 0) {
-                let div2 = document.createElement("div");
-                let html2 = `
-              <h5>${choicedesc}: ${choicecount}</h5>
-              <h5>0%</h5>
-            `
-                div2.innerHTML = html2
-                container.appendChild(div2);
-                container.appendChild(document.createElement("br"));
-            }
-            else {
-                let choicepercent = ((100 * choicecount) / poll[1]).toFixed(2)
-                let div1 = document.createElement("div");
-                let div2 = document.createElement("div");
-                div2.className = "progress-bar my-0"
-                div2.role = "progressbar"
-                div2.style.textAlign = 'right';
-                div2.style.width = (choicepercent / 4) + 'rem';
-                let html1 = `
-            <h5>${choicedesc}: ${choicecount}</h5>
-            `
-                let html2 = `
-            <h5>${choicepercent}%</h5>
-            `
-                div1.innerHTML = html1
-                div2.innerHTML = html2
-                container.appendChild(div1);
-                container.appendChild(div2);
-                container.appendChild(document.createElement("br"));
-            }
-        }
-        loadOptions();
-
-        return;
+        setPollData(poll);
+        let value = [poll[2], poll[0]]; // Set values from poll data
+        setValues(value);
+        setTotal(poll[1]); // Set total votes
     }
 
-
-
+    // Function to submit a vote to the contract
     async function submitVote(value) {
-        await vote(value);
-        location.reload()
+        try {
+            await vote(value); // Submit the vote
+            setHasVoted(true); // Set voting status to true
+        } catch (error) {
+            console.error("Error submitting vote:", error);
+        }
     }
-
 
     return (
         <div className="vote-container">
-            <p className="welcome-message">Welcome {publicKey}</p>
+            <h1 className="welcome-message">Welcome {publicKey}</h1>
             <section className="proposal-section">
-                <h1 className="proposal-title">Decentralized Voting system</h1>
+                <h1 className="proposal-title">Decentralized Voting System</h1>
                 <article className="proposal-description">
-                    <h5>A new community of blockchain enthusiasts.</h5>
+                    <h5>{propTitle}</h5>
                     <p>{description}</p>
                 </article>
             </section>
             <div className="voting-section">
                 <section className="voting-stats">
-                    <h5>Voting</h5>
+                    <h1>Voting</h1>
                     <ul className="stats-list">
                         <li>
                             <h6>Start Date</h6>
@@ -133,23 +86,60 @@ export default function Vote({ publicKey }) {
                             <h6>End Date</h6>
                             <span>{endDate}</span>
                         </li>
-                        <li>
-                            <h6>Total Votes</h6>
-                            <h3>
-                                <span>{total}</span>
-                            </h3>
-                        </li>
                     </ul>
+                    <div className="choicecontainer">
+                        <br />
+                        {pollFetched ? ( // If poll data has been fetched
+                            <div>
+                                <h5>Total Votes: {total}</h5>
+                                {choices.map((choicedesc, index) => {
+                                    let choicecount = values[index]; // Get vote count for each choice
+
+                                    if (choicecount == 0) { // If no votes for the choice
+                                        return (
+                                            <div key={index}>
+                                                <h5>{choicedesc}: 0</h5>
+                                                <h5>0%</h5>
+                                            </div>
+                                        );
+                                    } else { // If there are votes for the choice
+                                        let choicepercent = ((100 * choicecount) / pollData[1]).toFixed(2); // Calculate percentage
+                                        return (
+                                            <div key={index}>
+                                                <h5>{choicedesc}: {choicecount}</h5>
+                                                <h5>Percentage: {choicepercent}%</h5>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </div>
+                        ) : ( // If poll data has not been fetched
+                            <button onClick={handleVotingFetch} className="choiceButton">Fetch Voting Stats</button>
+                        )}
+                    </div>
                 </section>
                 <section className="vote-section">
-                    <h4>Vote</h4>
-                    <button onClick={handleCastVote}>Cast Vote</button>
-
+                    {cast ? ( // If user has cast a vote
+                        <>
+                            <h1>Vote</h1>
+                            {hasVoted ? ( // If user has voted
+                                <>
+                                    <h4>Voted: {userVote[0]}</h4>
+                                </>
+                            ) : ( // If user has not voted
+                                choices.map((choicedesc, index) => (
+                                    <div key={index}>
+                                        <button className="choiceButton" value={choicedesc} onClick={() => submitVote(choicedesc)}>{choicedesc}</button>
+                                        <br />
+                                    </div>
+                                ))
+                            )}
+                        </>
+                    ) : ( // If user has not cast a vote
+                        <button onClick={handleCasting} className="choiceButton">Cast Vote</button>
+                    )}
                 </section>
             </div>
-
-
-
         </div>
     );
 }

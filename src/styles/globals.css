@@ -5,7 +5,11 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(10px);
+    background-color: rgba(249, 249, 249, 0.7);
 }
+
+
 
 .welcome-message {
     font-size: 18px;
@@ -13,9 +17,7 @@
     margin-bottom: 20px;
     margin-top: 20px;
     align-items: center;
-    /* Center content horizontally */
     text-align: center;
-    /* Add margin to separate from proposal title */
 }
 
 .proposal-title {
@@ -24,15 +26,12 @@
     color: #333;
     margin-bottom: 20px;
     align-items: center;
-    /* Center content horizontally */
     text-align: center;
-    /* Add margin to separate from proposal description */
 }
 
 .proposal-section {
     margin-bottom: 20px;
     align-items: center;
-    /* Center content horizontally */
     text-align: center;
 }
 
@@ -40,13 +39,10 @@
 .proposal-description {
     margin-top: 10px;
     padding: 15px;
-    /* Added padding for better appearance */
     border: 2px solid #ccc;
-    /* Added border */
     border-radius: 8px;
-    /* Added border radius */
-    background-color: #fff;
-    /* Background color for description box */
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
 }
 
 .proposal-description h5 {
@@ -55,7 +51,7 @@
 }
 
 .proposal-description p {
-    font-size: 16px;
+    font-size: 18px;
     color: #777;
 }
 
@@ -80,14 +76,14 @@
 }
 
 .stats-list h6 {
-    font-size: 16px;
+    font-size: 18px;
     color: #555;
     margin: 0;
 }
 
 .stats-list span,
 .stats-list h3 {
-    font-size: 16px;
+    font-size: 18px;
     color: #777;
 }
 
@@ -103,4 +99,70 @@
 
 .voting-section {
     display: flex;
+}
+
+
+.connectButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 20px 40px;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.choiceButton {
+    background-color: lightgray;
+    color: black;
+    padding: 20px 40px;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid black;
+    margin: 10px auto;
+}
+
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.containerStyle {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.blackBackgroundStyle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: -2;
+}
+
+.imageStyle {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: auto;
+    position: relative;
+    z-index: -1;
 }
