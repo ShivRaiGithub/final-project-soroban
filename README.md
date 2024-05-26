@@ -62,4 +62,4 @@ Use ```npm install``` to install the dependencies. Use ```npm run devexp``` in o
 
 #### Executing commands
 Click on Connect button to Connect to freighter wallet. If successful you will see a page like "VotePageExample.png" image located in public folder. Click on 'Fetch Voting Stats' and sign the transaction on freighter wallet to get the status of Votes. Wait for a while until the transaction is mined and data is visible. Click on 'Cast Vote' to get Voting stats. If voted it will show the choice which you voted. else 2 buttons 'Yes' and 'No', clicking on which will ask you to sign transaction.  Page should look like "VotePageView.png" in public folder. Wait a while until transaction mines and data is updated. Reload page and login again to see updated voting stats. Page will look like "VotePageViewAndVoted.png" located in public folder if voting stats are fetched and vote is casted.   
-If you encounter any issue, try reloading the page.
+## If you encounter any issue, try reloading the page.
